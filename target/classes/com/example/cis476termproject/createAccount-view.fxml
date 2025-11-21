@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox alignment="CENTER" spacing="20.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.cis476termproject.CreateAccountController">
+    <padding>
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+    </padding>
+   <children>
+      <HBox alignment="TOP_CENTER" prefHeight="10.0" prefWidth="600.0" />
+      <HBox alignment="CENTER" prefHeight="300.0" prefWidth="600.0">
+         <children>
+            <AnchorPane>
+               <children>
+                  <Label layoutX="108.0" text="Welcome to MyPass" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="100.0" AnchorPane.topAnchor="0.0">
+                     <font>
+                        <Font name="Arial Bold" size="40.0" />
+                     </font>
+                  </Label>
+                  <TextField fx:id="emailField" layoutX="206.0" layoutY="84.0" prefHeight="25.0" prefWidth="200.0" AnchorPane.leftAnchor="195.0" AnchorPane.rightAnchor="195.0" AnchorPane.topAnchor="80.0" />
+                  <TextField fx:id="passwordField" layoutX="206.0" layoutY="124.0" prefHeight="25.0" prefWidth="200.0" AnchorPane.leftAnchor="195.0" AnchorPane.rightAnchor="195.0" AnchorPane.topAnchor="120.0" />
+                  <Label layoutX="121.0" layoutY="79.0" text="Email: " AnchorPane.leftAnchor="120.0" AnchorPane.topAnchor="80.0">
+                     <font>
+                        <Font name="Arial" size="24.0" />
+                     </font>
+                  </Label>
+                  <Label layoutX="74.0" layoutY="119.0" text="Password: " AnchorPane.leftAnchor="75.0" AnchorPane.topAnchor="119.0">
+                     <font>
+                        <Font name="Arial" size="24.0" />
+                     </font>
+                  </Label>
+                  <Button fx:id="createAccountButton" layoutX="194.0" layoutY="273.0" mnemonicParsing="false" onAction="#CreateAccountButtonClicked" prefHeight="25.0" prefWidth="100.0" text="Create Account" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="190.0" />
+                  <TextField fx:id="securityQuestion1" layoutX="133.0" layoutY="169.0" prefHeight="25.0" prefWidth="167.0" AnchorPane.bottomAnchor="110.0" AnchorPane.leftAnchor="133.0" />
+                  <Label layoutY="170.0" text="Security Question 1: " AnchorPane.bottomAnchor="114.0" AnchorPane.leftAnchor="0.0">
+                     <font>
+                        <Font name="Arial" size="14.0" />
+                     </font>
+                  </Label>
+                  <TextField fx:id="securityAnswer1" layoutX="431.0" layoutY="170.0" prefHeight="25.0" prefWidth="167.0" AnchorPane.bottomAnchor="110.0" AnchorPane.rightAnchor="0.0" />
+                  <Label layoutX="300.0" layoutY="170.0" text="Security Answer 1: " AnchorPane.bottomAnchor="114.0" AnchorPane.rightAnchor="165.0">
+                     <font>
+                        <Font name="Arial" size="14.0" />
+                     </font>
+                  </Label>
+                  <TextField fx:id="securityQuestion2" layoutX="133.0" layoutY="201.0" prefHeight="25.0" prefWidth="167.0" AnchorPane.bottomAnchor="75.0" AnchorPane.leftAnchor="133.0" />
+                  <Label layoutY="205.0" text="Security Question 2: " AnchorPane.bottomAnchor="79.0" AnchorPane.leftAnchor="0.0">
+                     <font>
+                        <Font name="Arial" size="14.0" />
+                     </font>
+                  </Label>
+                  <TextField fx:id="securityAnswer2" layoutX="431.0" layoutY="202.0" prefHeight="25.0" prefWidth="167.0" AnchorPane.bottomAnchor="75.0" AnchorPane.rightAnchor="0.0" />
+                  <Label layoutX="300.0" layoutY="205.0" text="Security Answer 2: " AnchorPane.bottomAnchor="79.0" AnchorPane.rightAnchor="165.0">
+                     <font>
+                        <Font name="Arial" size="14.0" />
+                     </font>
+                  </Label>
+                  <TextField fx:id="securityQuestion3" layoutX="133.0" layoutY="233.0" prefHeight="25.0" prefWidth="167.0" AnchorPane.bottomAnchor="40.0" AnchorPane.leftAnchor="133.0" />
+                  <Label layoutY="240.0" text="Security Question 3: " AnchorPane.bottomAnchor="44.0" AnchorPane.leftAnchor="0.0">
+                     <font>
+                        <Font name="Arial" size="14.0" />
+                     </font>
+                  </Label>
+                  <TextField fx:id="securityAnswer3" layoutX="431.0" layoutY="234.0" prefHeight="25.0" prefWidth="167.0" AnchorPane.bottomAnchor="40.0" AnchorPane.rightAnchor="0.0" />
+                  <Label layoutX="300.0" layoutY="240.0" text="Security Answer 3: " AnchorPane.bottomAnchor="44.0" AnchorPane.rightAnchor="165.0">
+                     <font>
+                        <Font name="Arial" size="14.0" />
+                     </font>
+                  </Label>
+                  <Button fx:id="backButton" layoutX="300.0" layoutY="273.0" mnemonicParsing="false" onAction="#BackButtonClicked" prefHeight="25.0" prefWidth="100.0" text="Back" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="190.0" />
+               </children>
+            </AnchorPane>
+         </children>
+      </HBox>
+      <HBox alignment="BOTTOM_CENTER" prefHeight="10.0" prefWidth="600.0" />
+   </children>
+</VBox>
