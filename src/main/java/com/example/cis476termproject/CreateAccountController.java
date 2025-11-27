@@ -29,7 +29,7 @@ public class CreateAccountController {
 
     @FXML
     public void CreateAccountButtonClicked() {
-        // Make sure to check if the email is in use already before creating a new account
+        /* Make sure to check if the email is in use already before creating a new account
         emailField.getText();
         passwordField.getText();
         securityQuestion1.getText();
@@ -38,6 +38,8 @@ public class CreateAccountController {
         securityAnswer2.getText();
         securityQuestion3.getText();
         securityAnswer3.getText();
+        We have to use the mediator pattern to manage communication between UI components, so can't pull email and password info directly from text fields
+         */
     }
 
     @FXML

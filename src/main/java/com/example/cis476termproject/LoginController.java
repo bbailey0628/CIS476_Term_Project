@@ -28,8 +28,12 @@ public class LoginController {
         /*
         Create login function that grabs the user based on the email provided
         Then check to ensure the password matches the one from the user
+        We have to use the mediator pattern to manage communication between UI components, so can't pull email and password info directly from text fields
          */
-        emailField.getText();
-        passwordField.getText();
+        try {
+            MyPassApplication.switchScene("home-view.fxml");
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }
