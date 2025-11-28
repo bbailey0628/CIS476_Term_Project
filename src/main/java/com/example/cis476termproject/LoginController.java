@@ -12,7 +12,11 @@ public class LoginController {
     @FXML
     private TextField emailField;
     @FXML
-    private TextField passwordField;
+    private PasswordField passwordField;
+    @FXML
+    private Button forgotPasswordButton;
+    @FXML
+    private Label loginFeedbackLabel;
 
     @FXML
     public void CreateAccountButtonClicked() {
@@ -25,15 +29,47 @@ public class LoginController {
 
     @FXML
     public void LoginButtonClicked() {
-        /*
-        Create login function that grabs the user based on the email provided
-        Then check to ensure the password matches the one from the user
-        We have to use the mediator pattern to manage communication between UI components, so can't pull email and password info directly from text fields
-         */
+        String email = emailField.getText();
+        String password = passwordField.getText();
+
+        if (email == null || email.isBlank() || password == null || password.isBlank()) {
+            setFeedback("Please enter both email and password.");
+            return;
+        }
+
+        UserLogin existingUser = VaultDB.getUserLoginByEmail(email.trim());
+        if (existingUser == null) {
+            setFeedback("Invalid email or password.");
+            return;
+        }
+
+        String hashedInput = PasswordHasher.hashPassword(password);
+        if (!hashedInput.equals(existingUser.getPassword())) {
+            setFeedback("Invalid email or password.");
+            return;
+        }
+
         try {
+            SessionManager.getInstance().setLoggedInUser(existingUser);
+            setFeedback("");
             MyPassApplication.switchScene("home-view.fxml");
         } catch (Exception e) {
+            setFeedback("Unable to complete login: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    public void ForgotPasswordClicked() {
+        try {
+            MyPassApplication.switchScene("recovery-view.fxml");
+        } catch (Exception e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    private void setFeedback(String message) {
+        if (loginFeedbackLabel != null) {
+            loginFeedbackLabel.setText(message);
         }
     }
 }

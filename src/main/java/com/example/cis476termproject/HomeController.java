@@ -57,6 +57,7 @@ public class HomeController {
     @FXML
     public void LogoutButtonClicked() {
         try {
+            SessionManager.getInstance().clearSession();
             MyPassApplication.switchScene("login-view.fxml");
         } catch (Exception e) {
             throw new RuntimeException(e);

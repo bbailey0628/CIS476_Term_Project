@@ -1,13 +1,107 @@
 package com.example.cis476termproject;
 
+import javafx.beans.property.ReadOnlyObjectWrapper;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
+import javafx.fxml.Initializable;
+import javafx.scene.control.*;
+import javafx.util.Callback;
+import java.net.URL;
+import java.util.ResourceBundle;
 
-public class CredentialsController {
+public class CredentialsController implements Initializable {
 
+    // Buttons and Labels
     @FXML
     private Button backButton;
+
+    @FXML
+    private Label urlLabel;
+    @FXML
+    private Label usernameLabel;
+    @FXML
+    private Label passwordLabel;
+
+    @FXML
+    private ToggleButton usernameToggle;
+    @FXML
+    private ToggleButton passwordToggle;
+
+    @FXML
+    private Label urlValueLabel;
+
+    @FXML
+    private Label usernameValueLabel;
+
+    @FXML
+    private Label passwordValueLabel;
+
+    @FXML
+    private TableView<MaskedCredentialProxy> credentialsTable;
+
+    @FXML
+    private TableColumn<MaskedCredentialProxy, String> urlColumn;
+
+    @FXML
+    private TableColumn<MaskedCredentialProxy, String> usernameColumn;
+
+    @FXML
+    private TableColumn<MaskedCredentialProxy, String> passwordColumn;
+
+    @FXML
+    private TableColumn<MaskedCredentialProxy, MaskedCredentialProxy> actionsColumn;
+
+    // Proxies for sensitive fields
+    private MaskedFieldProxy usernameProxy;
+    private MaskedFieldProxy passwordProxy;
+    private final SensitiveValueProxy urlProxy = new SensitiveValueProxy("https://example.com", false);
+    private final SensitiveValueProxy usernameSensitiveProxy = new SensitiveValueProxy("demo-user", false);
+    private final SensitiveValueProxy passwordSensitiveProxy = new SensitiveValueProxy("strong-password", true);
+
+    // Observable data for table
+    private final ObservableList<MaskedCredentialProxy> credentialData = FXCollections.observableArrayList();
+
+    /**
+     * Main Initialize method for the controller.
+     */
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        // Initialize sensitive field proxies
+        urlValueLabel.setText(urlProxy.getDisplayValue());
+        usernameValueLabel.setText(usernameSensitiveProxy.getDisplayValue());
+        passwordValueLabel.setText(passwordSensitiveProxy.getDisplayValue());
+
+        // Populate the table with example data
+        credentialData.addAll(
+                new MaskedCredentialProxy(new Credentials(1, 1, "example.com", "alice@example.com", "P@ssword1!")),
+                new MaskedCredentialProxy(new Credentials(2, 1, "example.org", "bob@example.org", "Sup3rSecret"))
+        );
+
+        credentialsTable.setItems(credentialData);
+
+        // Set up columns for the table
+        urlColumn.setCellValueFactory(cell -> new javafx.beans.property.SimpleStringProperty(cell.getValue().getURL()));
+        usernameColumn.setCellValueFactory(cell -> new javafx.beans.property.SimpleStringProperty(cell.getValue().getUsername()));
+        passwordColumn.setCellValueFactory(cell -> new javafx.beans.property.SimpleStringProperty(cell.getValue().getPassword()));
+        actionsColumn.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(param.getValue()));
+        actionsColumn.setCellFactory(buildActionCellFactory());
+
+        // Example username and password masking
+        Credentials credentials = new Credentials(1, 1, "https://example.com", "user@example.com", "SuperSecret123");
+        urlLabel.setText(credentials.getURL());
+        usernameProxy = new MaskedFieldProxy(credentials.getUsername());
+        passwordProxy = new MaskedFieldProxy(credentials.getPassword());
+
+        usernameLabel.textProperty().bind(usernameProxy.displayValueProperty());
+        passwordLabel.textProperty().bind(passwordProxy.displayValueProperty());
+
+        updateToggle(usernameToggle, usernameProxy);
+        updateToggle(passwordToggle, passwordProxy);
+
+        usernameToggle.selectedProperty().addListener((obs, oldVal, newVal) -> updateToggle(usernameToggle, usernameProxy));
+        passwordToggle.selectedProperty().addListener((obs, oldVal, newVal) -> updateToggle(passwordToggle, passwordProxy));
+    }
 
     @FXML
     public void BackButtonClicked() {
@@ -16,5 +110,90 @@ public class CredentialsController {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @FXML
+    public void toggleUsername() {
+        updateToggle(usernameToggle, usernameProxy);
+    }
+
+    @FXML
+    public void togglePassword() {
+        updateToggle(passwordToggle, passwordProxy);
+    }
+
+    @FXML
+    public void CopyUrlClicked() {
+        ClipboardManager.copyFromProxy(urlProxy);
+    }
+
+    @FXML
+    public void CopyUsernameClicked() {
+        ClipboardManager.copyFromProxy(usernameSensitiveProxy);
+    }
+
+    @FXML
+    public void CopyPasswordClicked() {
+        ClipboardManager.copyFromProxy(passwordSensitiveProxy);
+    }
+
+    public void loadCredentials(Credentials credentials) {
+        if (credentials == null) {
+            return;
+        }
+        urlProxy.updateValue(credentials.getURL());
+        usernameSensitiveProxy.updateValue(credentials.getUsername());
+        passwordSensitiveProxy.updateValue(credentials.getPassword());
+
+        urlValueLabel.setText(urlProxy.getDisplayValue());
+        usernameValueLabel.setText(usernameSensitiveProxy.getDisplayValue());
+        passwordValueLabel.setText(passwordSensitiveProxy.getDisplayValue());
+    }
+
+    private void updateToggle(ToggleButton toggle, MaskedFieldProxy proxy) {
+        if (toggle.isSelected()) {
+            proxy.reveal();
+            toggle.setText("Hide");
+        } else {
+            proxy.hide();
+            toggle.setText("Show");
+        }
+    }
+
+    private Callback<TableColumn<MaskedCredentialProxy, MaskedCredentialProxy>, TableCell<MaskedCredentialProxy, MaskedCredentialProxy>> buildActionCellFactory() {
+        return column -> new TableCell<>() {
+            private final Button toggleButton = new Button("Reveal");
+            private final Button copyButton = new Button("Copy");
+
+            {
+                toggleButton.setOnAction(event -> {
+                    MaskedCredentialProxy proxy = getTableView().getItems().get(getIndex());
+                    if (proxy.isRevealed()) {
+                        proxy.hide();
+                        toggleButton.setText("Reveal");
+                    } else {
+                        proxy.reveal();
+                        toggleButton.setText("Hide");
+                    }
+                    getTableView().refresh();
+                });
+
+                copyButton.setOnAction(event -> {
+                    MaskedCredentialProxy proxy = getTableView().getItems().get(getIndex());
+                    ClipboardManager.copyToClipboard("Username: " + proxy.getUsername() + "\nPassword: " + proxy.getPassword());
+                });
+            }
+
+            @Override
+            protected void updateItem(MaskedCredentialProxy proxy, boolean empty) {
+                super.updateItem(proxy, empty);
+                if (empty || proxy == null) {
+                    setGraphic(null);
+                    setText(null);
+                } else {
+                    setGraphic(new javafx.scene.layout.HBox(10, toggleButton, copyButton));
+                }
+            }
+        };
     }
 }

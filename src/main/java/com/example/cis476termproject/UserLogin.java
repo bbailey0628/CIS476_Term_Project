@@ -11,6 +11,10 @@ public class UserLogin {
     private String SecurityQuestion3;
     private String SecurityAnswer3;
 
+    public UserLogin(String email, String password, String securityQuestion1, String securityAnswer1, String securityQuestion2, String securityAnswer2, String securityQuestion3, String securityAnswer3) {
+        this(0, email, password, securityQuestion1, securityAnswer1, securityQuestion2, securityAnswer2, securityQuestion3, securityAnswer3);
+    }
+
     public UserLogin(int id, String email, String password, String securityQuestion1, String securityAnswer1, String securityQuestion2, String securityAnswer2, String securityQuestion3, String securityAnswer3) {
         setID(id);
         setEmail(email);

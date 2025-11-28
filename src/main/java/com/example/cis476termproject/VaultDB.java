@@ -190,7 +190,7 @@ public class VaultDB {
         try {
             Connection connection = getConnection();
 
-            PreparedStatement preparedStatement = connection.prepareStatement("update personalInfo set LicenseNumber = ?, SocialSecurityNumber = ?, PassportNumber = ? where OnwerID = ?");
+            PreparedStatement preparedStatement = connection.prepareStatement("update personalInfo set LicenseNumber = ?, SocialSecurityNumber = ?, PassportNumber = ? where OwnerID = ?");
 
             preparedStatement.setString(1, personalInfo.getLicenseNumber());
             preparedStatement.setInt(2, personalInfo.getSocialSecurityNumber());
@@ -208,18 +208,19 @@ public class VaultDB {
 
         try {
             Connection connection = getConnection();
-            Statement statement = connection.createStatement();
-            PreparedStatement preparedStatement = connection.prepareStatement("SELECT FROM PersonalInfo where OwnerID = ?");
+            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM PersonalInfo where OwnerID = ?");
 
             preparedStatement.setInt(1, ownerID);
 
             ResultSet personalInfoQuery = preparedStatement.executeQuery();
 
-            String licenseNumber = personalInfoQuery.getString("LicenseNumber");
-            int socialSecurityNumber = personalInfoQuery.getInt("SocialSecurityNumber");
-            String passportNumber = personalInfoQuery.getString("PassportNumber");
+            if (personalInfoQuery.next()) {
+                String licenseNumber = personalInfoQuery.getString("LicenseNumber");
+                int socialSecurityNumber = personalInfoQuery.getInt("SocialSecurityNumber");
+                String passportNumber = personalInfoQuery.getString("PassportNumber");
 
-            personalInfo = new PersonalInfo(ownerID, licenseNumber, socialSecurityNumber, passportNumber);
+                personalInfo = new PersonalInfo(ownerID, licenseNumber, socialSecurityNumber, passportNumber);
+            }
             personalInfoQuery.close();
 
             connection.close();
@@ -378,6 +379,40 @@ public class VaultDB {
             String securityAnswer3 = userLoginQuery.getString("SecurityAnswer3");
 
             userLogin = new UserLogin(id, email, password, securityQuestion1, securityAnswer1, securityQuestion2, securityAnswer2, securityQuestion3, securityAnswer3);
+            userLoginQuery.close();
+
+            connection.close();
+        } catch ( SQLException e){
+            System.out.println("SQLException: " + e.getMessage());
+        }
+
+        return userLogin;
+    }
+
+    public static UserLogin getUserLoginByEmail(String email){
+        UserLogin userLogin = null;
+
+        try {
+            Connection connection = getConnection();
+            Statement statement = connection.createStatement();
+            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM UserLogin where Email = ?");
+
+            preparedStatement.setString(1, email);
+
+            ResultSet userLoginQuery = preparedStatement.executeQuery();
+
+            if (userLoginQuery.next()) {
+                int id = userLoginQuery.getInt("ID");
+                String password = userLoginQuery.getString("Password");
+                String securityQuestion1 = userLoginQuery.getString("SecurityQuestion1");
+                String securityAnswer1 = userLoginQuery.getString("SecurityAnswer1");
+                String securityQuestion2 = userLoginQuery.getString("SecurityQuestion2");
+                String securityAnswer2 = userLoginQuery.getString("SecurityAnswer2");
+                String securityQuestion3 = userLoginQuery.getString("SecurityQuestion3");
+                String securityAnswer3 = userLoginQuery.getString("SecurityAnswer3");
+
+                userLogin = new UserLogin(id, email, password, securityQuestion1, securityAnswer1, securityQuestion2, securityAnswer2, securityQuestion3, securityAnswer3);
+            }
             userLoginQuery.close();
 
             connection.close();

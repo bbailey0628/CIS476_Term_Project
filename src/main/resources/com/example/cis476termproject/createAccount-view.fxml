@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox alignment="CENTER" spacing="20.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.cis476termproject.CreateAccountController">
+<VBox alignment="CENTER" spacing="20.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.cis476termproject.CreateAccountController">
     <padding>
         <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
     </padding>
@@ -26,6 +26,7 @@
                   </Label>
                   <TextField fx:id="emailField" layoutX="206.0" layoutY="84.0" prefHeight="25.0" prefWidth="200.0" AnchorPane.leftAnchor="195.0" AnchorPane.rightAnchor="195.0" AnchorPane.topAnchor="80.0" />
                   <TextField fx:id="passwordField" layoutX="206.0" layoutY="124.0" prefHeight="25.0" prefWidth="200.0" AnchorPane.leftAnchor="195.0" AnchorPane.rightAnchor="195.0" AnchorPane.topAnchor="120.0" />
+                  <Button fx:id="generatePasswordButton" layoutX="413.0" layoutY="124.0" mnemonicParsing="false" onAction="#GeneratePasswordButtonClicked" prefHeight="25.0" prefWidth="120.0" text="Generate" AnchorPane.rightAnchor="60.0" AnchorPane.topAnchor="120.0" />
                   <Label layoutX="121.0" layoutY="79.0" text="Email: " AnchorPane.leftAnchor="120.0" AnchorPane.topAnchor="80.0">
                      <font>
                         <Font name="Arial" size="24.0" />
@@ -36,6 +37,7 @@
                         <Font name="Arial" size="24.0" />
                      </font>
                   </Label>
+                  <Label fx:id="passwordWarningLabel" layoutX="195.0" layoutY="150.0" prefHeight="25.0" prefWidth="338.0" textFill="RED" AnchorPane.leftAnchor="195.0" AnchorPane.topAnchor="150.0" />
                   <Button fx:id="createAccountButton" layoutX="194.0" layoutY="273.0" mnemonicParsing="false" onAction="#CreateAccountButtonClicked" prefHeight="25.0" prefWidth="100.0" text="Create Account" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="190.0" />
                   <TextField fx:id="securityQuestion1" layoutX="133.0" layoutY="169.0" prefHeight="25.0" prefWidth="167.0" AnchorPane.bottomAnchor="110.0" AnchorPane.leftAnchor="133.0" />
                   <Label layoutY="170.0" text="Security Question 1: " AnchorPane.bottomAnchor="114.0" AnchorPane.leftAnchor="0.0">
@@ -73,6 +75,7 @@
                         <Font name="Arial" size="14.0" />
                      </font>
                   </Label>
+                  <Label fx:id="validationMessage" layoutX="198.0" layoutY="304.0" prefHeight="16.0" prefWidth="258.0" textFill="#c22030" AnchorPane.bottomAnchor="-27.0" AnchorPane.leftAnchor="198.0" />
                   <Button fx:id="backButton" layoutX="300.0" layoutY="273.0" mnemonicParsing="false" onAction="#BackButtonClicked" prefHeight="25.0" prefWidth="100.0" text="Back" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="190.0" />
                </children>
             </AnchorPane>

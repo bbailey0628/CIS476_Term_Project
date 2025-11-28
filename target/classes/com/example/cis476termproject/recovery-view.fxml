@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<VBox alignment="TOP_CENTER" spacing="12.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.cis476termproject.RecoveryController">
+    <padding>
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+    </padding>
+    <children>
+        <Label text="Account Recovery">
+            <font>
+                <Font name="Arial Bold" size="32.0" />
+            </font>
+        </Label>
+        <Separator />
+        <HBox alignment="CENTER_LEFT" spacing="10.0">
+            <Label text="Email:" />
+            <TextField fx:id="emailField" promptText="you@example.com" prefWidth="250" />
+            <Button fx:id="loadUserButton" mnemonicParsing="false" onAction="#loadUser" text="Find Account" />
+        </HBox>
+        <VBox spacing="8.0" prefWidth="600">
+            <Label text="Security question:" />
+            <Label fx:id="questionLabel" text="Security Question" wrapText="true" />
+            <HBox spacing="8.0">
+                <TextField fx:id="answerField" promptText="Your answer" prefWidth="300" />
+                <Button fx:id="submitAnswerButton" mnemonicParsing="false" onAction="#submitAnswer" text="Submit Answer" />
+            </HBox>
+        </VBox>
+        <Label fx:id="feedbackLabel" textFill="BLACK" wrapText="true" />
+        <Separator />
+        <VBox spacing="10.0" prefWidth="600">
+            <Label text="Reset password" />
+            <GridPane hgap="10" vgap="10">
+                <columnConstraints>
+                    <ColumnConstraints halignment="RIGHT" minWidth="120" />
+                    <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="250" />
+                </columnConstraints>
+                <rowConstraints>
+                    <RowConstraints />
+                    <RowConstraints />
+                    <RowConstraints />
+                </rowConstraints>
+                <children>
+                    <Label text="New password:" GridPane.rowIndex="0" GridPane.columnIndex="0" />
+                    <PasswordField fx:id="newPasswordField" GridPane.rowIndex="0" GridPane.columnIndex="1" onKeyReleased="#handlePasswordInputChanged" />
+                    <Label text="Confirm password:" GridPane.rowIndex="1" GridPane.columnIndex="0" />
+                    <PasswordField fx:id="confirmPasswordField" GridPane.rowIndex="1" GridPane.columnIndex="1" onKeyReleased="#handlePasswordInputChanged" />
+                    <Label fx:id="strengthLabel" text="Strength: n/a" GridPane.rowIndex="2" GridPane.columnIndex="0" />
+                    <Label fx:id="passwordStatusLabel" textFill="red" GridPane.rowIndex="2" GridPane.columnIndex="1" />
+                </children>
+            </GridPane>
+            <HBox alignment="CENTER_RIGHT">
+                <Button fx:id="resetPasswordButton" mnemonicParsing="false" onAction="#resetPassword" text="Reset Password" />
+            </HBox>
+        </VBox>
+    </children>
+</VBox>
