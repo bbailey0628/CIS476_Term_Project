@@ -244,4 +244,12 @@ public class CreditCardController implements Initializable {
             }
         };
     }
+
+    @FXML
+    public void toggleCcv() {
+    }
+
+    @FXML
+    public void toggleCardNumber() {
+    }
 }

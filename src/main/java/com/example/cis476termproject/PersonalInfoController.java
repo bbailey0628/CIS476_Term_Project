@@ -16,9 +16,6 @@ import java.util.ResourceBundle;
 public class PersonalInfoController implements Initializable {
 
     @FXML
-    private Button backButton;
-
-    @FXML
     private Label licenseLabel;
 
     @FXML
@@ -58,6 +55,8 @@ public class PersonalInfoController implements Initializable {
 
     // Observable list for the table data
     private final ObservableList<MaskedPersonalInfoProxy> personalInfos = FXCollections.observableArrayList();
+    @FXML
+    private Button backButton;
 
     /**
      * Initializes the controller for the scene.
@@ -173,5 +172,17 @@ public class PersonalInfoController implements Initializable {
                 }
             }
         };
+    }
+
+    @FXML
+    public void toggleSsn() {
+    }
+
+    @FXML
+    public void toggleLicense() {
+    }
+
+    @FXML
+    public void togglePassport() {
     }
 }
