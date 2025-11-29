@@ -16,24 +16,6 @@ import java.util.ResourceBundle;
 public class PersonalInfoController implements Initializable {
 
     @FXML
-    private Label licenseLabel;
-
-    @FXML
-    private Label ssnLabel;
-
-    @FXML
-    private Label passportLabel;
-
-    @FXML
-    private ToggleButton licenseToggle;
-
-    @FXML
-    private ToggleButton ssnToggle;
-
-    @FXML
-    private ToggleButton passportToggle;
-
-    @FXML
     private TableView<MaskedPersonalInfoProxy> personalInfoTable;
 
     @FXML
@@ -63,28 +45,6 @@ public class PersonalInfoController implements Initializable {
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        // Initialize sample data
-        PersonalInfo personalInfo = new PersonalInfo(1, "D1234567", 123456789, "X1234567");
-
-        // Initialize proxies for sensitive values
-        licenseProxy = new MaskedFieldProxy(personalInfo.getLicenseNumber());
-        ssnProxy = new MaskedFieldProxy(String.valueOf(personalInfo.getSocialSecurityNumber()));
-        passportProxy = new MaskedFieldProxy(personalInfo.getPassportNumber());
-
-        // Bind proxies to labels
-        licenseLabel.textProperty().bind(licenseProxy.displayValueProperty());
-        ssnLabel.textProperty().bind(ssnProxy.displayValueProperty());
-        passportLabel.textProperty().bind(passportProxy.displayValueProperty());
-
-        // Setup toggle buttons for showing/hiding sensitive values
-        updateToggle(licenseToggle, licenseProxy);
-        updateToggle(ssnToggle, ssnProxy);
-        updateToggle(passportToggle, passportProxy);
-
-        licenseToggle.selectedProperty().addListener((obs, oldVal, newVal) -> updateToggle(licenseToggle, licenseProxy));
-        ssnToggle.selectedProperty().addListener((obs, oldVal, newVal) -> updateToggle(ssnToggle, ssnProxy));
-        passportToggle.selectedProperty().addListener((obs, oldVal, newVal) -> updateToggle(passportToggle, passportProxy));
-
         // Initialize table with sample data
         personalInfos.addAll(
                 new MaskedPersonalInfoProxy(new PersonalInfo(1, "D1234567", 111223333, "P12345678")),

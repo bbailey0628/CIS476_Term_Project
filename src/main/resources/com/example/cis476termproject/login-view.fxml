@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox alignment="CENTER" spacing="20.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.cis476termproject.LoginController">
+<VBox alignment="CENTER" spacing="20.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.cis476termproject.LoginController">
     <padding>
         <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
     </padding>
@@ -25,22 +25,22 @@
                         <Font name="Arial Bold" size="40.0" />
                      </font>
                   </Label>
-                  <TextField fx:id="emailField" layoutX="200.0" layoutY="202.0" prefHeight="25.0" prefWidth="200.0" AnchorPane.bottomAnchor="75.0" AnchorPane.leftAnchor="195.0" AnchorPane.rightAnchor="195.0" />
-                  <PasswordField fx:id="passwordField" layoutX="201.0" layoutY="240.0" prefHeight="25.0" prefWidth="200.0" AnchorPane.bottomAnchor="35.0" AnchorPane.leftAnchor="195.0" AnchorPane.rightAnchor="195.0" />
-                  <Label layoutX="120.0" layoutY="199.0" text="Email: " AnchorPane.bottomAnchor="75.0">
+                  <TextField fx:id="emailField" layoutX="194.0" layoutY="210.0" prefHeight="25.0" prefWidth="200.0" AnchorPane.bottomAnchor="123.0" AnchorPane.leftAnchor="194.0" AnchorPane.rightAnchor="196.0" />
+                  <PasswordField fx:id="passwordField" layoutX="194.0" layoutY="250.0" prefHeight="25.0" prefWidth="200.0" AnchorPane.bottomAnchor="83.0" AnchorPane.leftAnchor="194.0" AnchorPane.rightAnchor="196.0" />
+                  <Label layoutX="119.0" layoutY="208.0" text="Email: " AnchorPane.bottomAnchor="123.0">
                      <font>
                         <Font name="Arial" size="24.0" />
                      </font>
                   </Label>
-                  <Label layoutX="76.0" layoutY="239.0" text="Password: " AnchorPane.bottomAnchor="35.0">
+                  <Label layoutX="75.0" layoutY="248.0" text="Password: " AnchorPane.bottomAnchor="83.0">
                      <font>
                         <Font name="Arial" size="24.0" />
                      </font>
                   </Label>
-                  <Button fx:id="loginButton" layoutX="194.0" layoutY="274.0" mnemonicParsing="false" onAction="#LoginButtonClicked" prefHeight="25.0" prefWidth="100.0" text="Login" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="190.0" />
-                  <Button fx:id="createAccountButton" layoutX="300.0" layoutY="274.0" mnemonicParsing="false" onAction="#CreateAccountButtonClicked" prefHeight="25.0" prefWidth="100.0" text="Create Account" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="190.0" />
-                  <Button fx:id="forgotPasswordButton" layoutX="195.0" layoutY="308.0" mnemonicParsing="false" onAction="#ForgotPasswordClicked" prefHeight="25.0" prefWidth="205.0" text="Forgot password?" AnchorPane.bottomAnchor="-34.0" AnchorPane.leftAnchor="195.0" AnchorPane.rightAnchor="195.0" />
-                  <Label fx:id="loginFeedbackLabel" layoutX="195.0" layoutY="338.0" prefHeight="20.0" prefWidth="200.0" textFill="RED" />
+                  <Button fx:id="loginButton" layoutX="197.0" layoutY="243.0" mnemonicParsing="false" onAction="#LoginButtonClicked" prefHeight="25.0" prefWidth="100.0" text="Login" AnchorPane.bottomAnchor="32.0" AnchorPane.leftAnchor="197.0" />
+                  <Button fx:id="createAccountButton" layoutX="298.0" layoutY="243.0" mnemonicParsing="false" onAction="#CreateAccountButtonClicked" prefHeight="25.0" prefWidth="100.0" text="Create Account" AnchorPane.bottomAnchor="32.0" AnchorPane.rightAnchor="197.0" />
+                  <Button fx:id="forgotPasswordButton" layoutX="195.0" layoutY="275.0" mnemonicParsing="false" onAction="#ForgotPasswordClicked" prefHeight="25.0" prefWidth="205.0" text="Forgot password?" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="195.0" AnchorPane.rightAnchor="195.0" />
+                  <Label fx:id="loginFeedbackLabel" layoutX="197.0" layoutY="217.0" prefHeight="20.0" prefWidth="200.0" textFill="RED" />
                </children>
             </AnchorPane>
          </children>

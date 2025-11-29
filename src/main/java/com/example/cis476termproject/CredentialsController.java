@@ -17,18 +17,6 @@ public class CredentialsController implements Initializable {
     private Button backButton;
 
     @FXML
-    private Label urlLabel;
-    @FXML
-    private Label usernameLabel;
-    @FXML
-    private Label passwordLabel;
-
-    @FXML
-    private ToggleButton usernameToggle;
-    @FXML
-    private ToggleButton passwordToggle;
-
-    @FXML
     private Label urlValueLabel;
 
     @FXML
@@ -86,21 +74,6 @@ public class CredentialsController implements Initializable {
         passwordColumn.setCellValueFactory(cell -> new javafx.beans.property.SimpleStringProperty(cell.getValue().getPassword()));
         actionsColumn.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(param.getValue()));
         actionsColumn.setCellFactory(buildActionCellFactory());
-
-        // Example username and password masking
-        Credentials credentials = new Credentials(1, 1, "https://example.com", "user@example.com", "SuperSecret123");
-        urlLabel.setText(credentials.getURL());
-        usernameProxy = new MaskedFieldProxy(credentials.getUsername());
-        passwordProxy = new MaskedFieldProxy(credentials.getPassword());
-
-        usernameLabel.textProperty().bind(usernameProxy.displayValueProperty());
-        passwordLabel.textProperty().bind(passwordProxy.displayValueProperty());
-
-        updateToggle(usernameToggle, usernameProxy);
-        updateToggle(passwordToggle, passwordProxy);
-
-        usernameToggle.selectedProperty().addListener((obs, oldVal, newVal) -> updateToggle(usernameToggle, usernameProxy));
-        passwordToggle.selectedProperty().addListener((obs, oldVal, newVal) -> updateToggle(passwordToggle, passwordProxy));
     }
 
     @FXML
@@ -110,16 +83,6 @@ public class CredentialsController implements Initializable {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-    }
-
-    @FXML
-    public void toggleUsername() {
-        updateToggle(usernameToggle, usernameProxy);
-    }
-
-    @FXML
-    public void togglePassword() {
-        updateToggle(passwordToggle, passwordProxy);
     }
 
     @FXML

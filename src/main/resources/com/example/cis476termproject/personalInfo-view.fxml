@@ -5,12 +5,8 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
@@ -37,31 +33,6 @@
                 </TableView>
                 <HBox alignment="CENTER" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
                     <children>
-                        <GridPane hgap="10.0" layoutX="40.0" layoutY="80.0" vgap="10.0" AnchorPane.leftAnchor="40.0" AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="80.0">
-                            <columnConstraints>
-                                <ColumnConstraints halignment="RIGHT" percentWidth="30.0" />
-                                <ColumnConstraints percentWidth="40.0" />
-                                <ColumnConstraints halignment="CENTER" percentWidth="30.0" />
-                            </columnConstraints>
-                            <rowConstraints>
-                                <RowConstraints minHeight="30.0" prefHeight="30.0" />
-                                <RowConstraints minHeight="30.0" prefHeight="30.0" />
-                                <RowConstraints minHeight="30.0" prefHeight="30.0" />
-                            </rowConstraints>
-                            <children>
-                                <Label text="License #:" />
-                                <Label fx:id="licenseLabel" GridPane.columnIndex="1" />
-                                <ToggleButton fx:id="licenseToggle" mnemonicParsing="false" onAction="#toggleLicense" text="Show" GridPane.columnIndex="2" />
-
-                                <Label text="SSN:" GridPane.rowIndex="1" />
-                                <Label fx:id="ssnLabel" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                <ToggleButton fx:id="ssnToggle" mnemonicParsing="false" onAction="#toggleSsn" text="Show" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-
-                                <Label text="Passport #:" GridPane.rowIndex="2" />
-                                <Label fx:id="passportLabel" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                                <ToggleButton fx:id="passportToggle" mnemonicParsing="false" onAction="#togglePassport" text="Show" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-                            </children>
-                        </GridPane>
                         <Button fx:id="backButton" mnemonicParsing="false" onAction="#BackButtonClicked" prefHeight="25.0" prefWidth="100.0" text="Back" />
                     </children>
                 </HBox>

@@ -20,27 +20,6 @@ public class CreditCardController implements Initializable {
     private Button backButton;
 
     @FXML
-    private Label issuerLabel;
-
-    @FXML
-    private Label cardholderLabel;
-
-    @FXML
-    private Label expirationLabel;
-
-    @FXML
-    private Label cardNumberLabel;
-
-    @FXML
-    private Label ccvLabel;
-
-    @FXML
-    private ToggleButton cardNumberToggle;
-
-    @FXML
-    private ToggleButton ccvToggle;
-
-    @FXML
     private Label issuerValueLabel;
 
     @FXML
@@ -99,28 +78,6 @@ public class CreditCardController implements Initializable {
         nameValueLabel.setText(nameProxy.getDisplayValue());
         expirationValueLabel.setText(expirationProxy.getDisplayValue());
         ccvValueLabel.setText(ccvSensitiveProxy.getDisplayValue());
-
-        // Create credit card proxies
-        CreditCard creditCard = new CreditCard(1, 1, "Visa", 411111111, "Alex Smith", 1225, 321);
-        issuerLabel.setText(creditCard.getIssuer());
-        cardholderLabel.setText(creditCard.getCardholderName());
-        expirationLabel.setText(String.valueOf(creditCard.getExpirationDate()));
-
-        // Initialize masked proxies for card number and CCV
-        cardNumberProxy = new MaskedFieldProxy(String.valueOf(creditCard.getCreditCardNumber()));
-        ccvProxy = new MaskedFieldProxy(String.valueOf(creditCard.getCCVCode()));
-
-        // Bind text properties
-        cardNumberLabel.textProperty().bind(cardNumberProxy.displayValueProperty());
-        ccvLabel.textProperty().bind(ccvProxy.displayValueProperty());
-
-        // Update toggle buttons
-        updateToggle(cardNumberToggle, cardNumberProxy);
-        updateToggle(ccvToggle, ccvProxy);
-
-        // Set up listeners for toggles
-        cardNumberToggle.selectedProperty().addListener((obs, oldVal, newVal) -> updateToggle(cardNumberToggle, cardNumberProxy));
-        ccvToggle.selectedProperty().addListener((obs, oldVal, newVal) -> updateToggle(ccvToggle, ccvProxy));
 
         // Populate table with initial data
         creditCards.addAll(
