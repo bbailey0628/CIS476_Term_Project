@@ -30,7 +30,7 @@ public class MaskedCreditCardProxy {
     }
 
     public String getCreditCardNumber() {
-        return maskNumber(String.valueOf(creditCard.getCreditCardNumber()));
+        return maskNumber(creditCard.getCreditCardNumber());
     }
 
     public String getCardholderName() {
@@ -38,15 +38,15 @@ public class MaskedCreditCardProxy {
     }
 
     public String getExpirationDate() {
-        return maskNumber(String.valueOf(creditCard.getExpirationDate()));
+        return maskNumber(creditCard.getExpirationDate());
     }
 
     public String getCcvCode() {
-        return maskNumber(String.valueOf(creditCard.getCCVCode()));
+        return maskNumber(creditCard.getCCVCode());
     }
 
     public String getUnmaskedCreditCardNumber() {
-        return String.valueOf(creditCard.getCreditCardNumber());
+        return creditCard.getCreditCardNumber();
     }
 
     public String getUnmaskedCardholderName() {
@@ -54,11 +54,11 @@ public class MaskedCreditCardProxy {
     }
 
     public String getUnmaskedExpirationDate() {
-        return String.valueOf(creditCard.getExpirationDate());
+        return creditCard.getExpirationDate();
     }
 
     public String getUnmaskedCcvCode() {
-        return String.valueOf(creditCard.getCCVCode());
+        return creditCard.getCCVCode();
     }
 
     private String mask(String value) {
@@ -75,6 +75,9 @@ public class MaskedCreditCardProxy {
     }
 
     private String maskNumber(String value) {
+        if (value == null) {
+            return "";
+        }
         if (revealed) {
             return value;
         }

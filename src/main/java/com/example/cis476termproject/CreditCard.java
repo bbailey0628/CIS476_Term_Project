@@ -4,12 +4,12 @@ public class CreditCard {
     private int ID;
     private int OwnerID;
     private String Issuer;
-    private int CreditCardNumber;
+    private String CreditCardNumber;
     private String CardholderName;
-    private int ExpirationDate;
-    private int CCVCode;
+    private String ExpirationDate;
+    private String CCVCode;
 
-    public CreditCard(int id, int ownerID, String issuer, int creditCardNumber, String cardholderName, int expirationDate, int ccvCode) {
+    public CreditCard(int id, int ownerID, String issuer, String creditCardNumber, String cardholderName, String expirationDate, String ccvCode) {
         setID(id);
         setOwnerID(ownerID);
         setIssuer(issuer);
@@ -43,11 +43,11 @@ public class CreditCard {
         Issuer = issuer;
     }
 
-    public int getCreditCardNumber() {
+    public String getCreditCardNumber() {
         return CreditCardNumber;
     }
 
-    public void setCreditCardNumber(int creditCardNumber) {
+    public void setCreditCardNumber(String creditCardNumber) {
         CreditCardNumber = creditCardNumber;
     }
 
@@ -59,19 +59,27 @@ public class CreditCard {
         CardholderName = cardholderName;
     }
 
-    public int getExpirationDate() {
+    public String getExpirationDate() {
         return ExpirationDate;
     }
 
-    public void setExpirationDate(int expirationDate) {
+    public void setExpirationDate(String expirationDate) {
         ExpirationDate = expirationDate;
     }
 
-    public int getCCVCode() {
+    public String getCCVCode() {
         return CCVCode;
     }
 
-    public void setCCVCode(int CCVCode) {
+    public String getCVCCode() {
+        return CCVCode;
+    }
+
+    public void setCCVCode(String CCVCode) {
         this.CCVCode = CCVCode;
+    }
+
+    public void setCVCCode(String CVCCode) {
+        this.CCVCode = CVCCode;
     }
 }

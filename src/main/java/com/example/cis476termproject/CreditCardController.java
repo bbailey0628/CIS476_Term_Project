@@ -6,8 +6,6 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
-import javafx.scene.input.Clipboard;
-import javafx.scene.input.ClipboardContent;
 import javafx.util.Callback;
 
 import java.net.URL;
@@ -15,24 +13,8 @@ import java.util.ResourceBundle;
 
 public class CreditCardController implements Initializable {
 
-    // FXML Annotations
     @FXML
     private Button backButton;
-
-    @FXML
-    private Label issuerValueLabel;
-
-    @FXML
-    private Label numberValueLabel;
-
-    @FXML
-    private Label nameValueLabel;
-
-    @FXML
-    private Label expirationValueLabel;
-
-    @FXML
-    private Label ccvValueLabel;
 
     @FXML
     private TableView<MaskedCreditCardProxy> creditCardTable;
@@ -55,38 +37,27 @@ public class CreditCardController implements Initializable {
     @FXML
     private TableColumn<MaskedCreditCardProxy, MaskedCreditCardProxy> actionsColumn;
 
-    // Proxies for Sensitive Fields
-    private MaskedFieldProxy cardNumberProxy;
-    private MaskedFieldProxy ccvProxy;
-    private final SensitiveValueProxy issuerProxy = new SensitiveValueProxy("My Bank", false);
-    private final SensitiveValueProxy numberProxy = new SensitiveValueProxy("4111111111111111", true);
-    private final SensitiveValueProxy nameProxy = new SensitiveValueProxy("Card Holder", false);
-    private final SensitiveValueProxy expirationProxy = new SensitiveValueProxy("12/29", false);
-    private final SensitiveValueProxy ccvSensitiveProxy = new SensitiveValueProxy("123", true);
+    @FXML
+    private TextField issuerField;
 
-    // Observable List for Table Data
+    @FXML
+    private TextField numberField;
+
+    @FXML
+    private TextField nameField;
+
+    @FXML
+    private TextField expirationField;
+
+    @FXML
+    private TextField ccvField;
+
     private final ObservableList<MaskedCreditCardProxy> creditCards = FXCollections.observableArrayList();
 
-    /**
-     * Main initialize method.
-     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        // Set up information for sensitive value proxies
-        issuerValueLabel.setText(issuerProxy.getDisplayValue());
-        numberValueLabel.setText(numberProxy.getDisplayValue());
-        nameValueLabel.setText(nameProxy.getDisplayValue());
-        expirationValueLabel.setText(expirationProxy.getDisplayValue());
-        ccvValueLabel.setText(ccvSensitiveProxy.getDisplayValue());
-
-        // Populate table with initial data
-        creditCards.addAll(
-                new MaskedCreditCardProxy(new CreditCard(1, 1, "Visa", 411111111, "Alex Doe", 1225, 123)),
-                new MaskedCreditCardProxy(new CreditCard(2, 1, "Mastercard", 550000000, "Sam Smith", 1124, 987))
-        );
         creditCardTable.setItems(creditCards);
 
-        // Set cell value factories
         issuerColumn.setCellValueFactory(cell -> new javafx.beans.property.SimpleStringProperty(cell.getValue().getIssuer()));
         numberColumn.setCellValueFactory(cell -> new javafx.beans.property.SimpleStringProperty(cell.getValue().getCreditCardNumber()));
         nameColumn.setCellValueFactory(cell -> new javafx.beans.property.SimpleStringProperty(cell.getValue().getCardholderName()));
@@ -94,6 +65,10 @@ public class CreditCardController implements Initializable {
         ccvColumn.setCellValueFactory(cell -> new javafx.beans.property.SimpleStringProperty(cell.getValue().getCcvCode()));
         actionsColumn.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(param.getValue()));
         actionsColumn.setCellFactory(buildActionCellFactory());
+
+        creditCardTable.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> populateForm(newVal));
+
+        loadCards();
     }
 
     @FXML
@@ -105,65 +80,73 @@ public class CreditCardController implements Initializable {
         }
     }
 
-    private void updateToggle(ToggleButton toggle, MaskedFieldProxy proxy) {
-        if (toggle.isSelected()) {
-            proxy.reveal();
-            toggle.setText("Hide");
-        } else {
-            proxy.hide();
-            toggle.setText("Show");
-        }
-    }
-
     @FXML
-    public void CopyIssuerClicked() {
-        ClipboardManager.copyFromProxy(issuerProxy);
-    }
-
-    @FXML
-    public void CopyNumberClicked() {
-        ClipboardManager.copyFromProxy(numberProxy);
-    }
-
-    @FXML
-    public void CopyNameClicked() {
-        ClipboardManager.copyFromProxy(nameProxy);
-    }
-
-    @FXML
-    public void CopyExpirationClicked() {
-        ClipboardManager.copyFromProxy(expirationProxy);
-    }
-
-    @FXML
-    public void CopyCcvClicked() {
-        ClipboardManager.copyFromProxy(ccvSensitiveProxy);
-    }
-
-    public void loadCreditCard(CreditCard creditCard) {
-        if (creditCard == null) {
+    public void addCard() {
+        if (!validateInput()) {
             return;
         }
+        CreditCard card = new CreditCard(0, getOwnerId(),
+                issuerField.getText().trim(),
+                numberField.getText().trim(),
+                nameField.getText().trim(),
+                expirationField.getText().trim(),
+                ccvField.getText().trim());
+        int id = VaultDB.addCreditCard(card);
+        if (id > 0) {
+            card.setID(id);
+            creditCards.add(new MaskedCreditCardProxy(card));
+            clearSelection();
+        } else {
+            showAlert("Save failed", "Unable to save credit card.");
+        }
+    }
 
-        // Update proxies with new credit card data
-        issuerProxy.updateValue(creditCard.getIssuer());
-        numberProxy.updateValue(String.valueOf(creditCard.getCreditCardNumber()));
-        nameProxy.updateValue(creditCard.getCardholderName());
-        expirationProxy.updateValue(String.valueOf(creditCard.getExpirationDate()));
-        ccvSensitiveProxy.updateValue(String.valueOf(creditCard.getCCVCode()));
+    @FXML
+    public void updateCard() {
+        MaskedCreditCardProxy proxy = creditCardTable.getSelectionModel().getSelectedItem();
+        if (proxy == null) {
+            showAlert("No selection", "Select an entry to update.");
+            return;
+        }
+        if (!validateInput()) {
+            return;
+        }
+        proxy.getCreditCard().setIssuer(issuerField.getText().trim());
+        proxy.getCreditCard().setCreditCardNumber(numberField.getText().trim());
+        proxy.getCreditCard().setCardholderName(nameField.getText().trim());
+        proxy.getCreditCard().setExpirationDate(expirationField.getText().trim());
+        proxy.getCreditCard().setCCVCode(ccvField.getText().trim());
+        VaultDB.updateCreditCard(proxy.getCreditCard());
+        creditCardTable.refresh();
+        clearSelection();
+    }
 
-        // Update UI with new data
-        issuerValueLabel.setText(issuerProxy.getDisplayValue());
-        numberValueLabel.setText(numberProxy.getDisplayValue());
-        nameValueLabel.setText(nameProxy.getDisplayValue());
-        expirationValueLabel.setText(expirationProxy.getDisplayValue());
-        ccvValueLabel.setText(ccvSensitiveProxy.getDisplayValue());
+    @FXML
+    public void deleteCard() {
+        MaskedCreditCardProxy proxy = creditCardTable.getSelectionModel().getSelectedItem();
+        if (proxy == null) {
+            showAlert("No selection", "Select an entry to delete.");
+            return;
+        }
+        deleteCard(proxy);
+    }
+
+    @FXML
+    public void clearSelection() {
+        creditCardTable.getSelectionModel().clearSelection();
+        issuerField.clear();
+        numberField.clear();
+        nameField.clear();
+        expirationField.clear();
+        ccvField.clear();
     }
 
     private Callback<TableColumn<MaskedCreditCardProxy, MaskedCreditCardProxy>, TableCell<MaskedCreditCardProxy, MaskedCreditCardProxy>> buildActionCellFactory() {
         return column -> new TableCell<>() {
             private final Button toggleButton = new Button("Reveal");
-            private final Button copyButton = new Button("Copy");
+            private final Button copyButton = new Button("Copy All");
+            private final Button editButton = new Button("Edit");
+            private final Button deleteButton = new Button("Delete");
 
             {
                 toggleButton.setOnAction(event -> {
@@ -180,12 +163,24 @@ public class CreditCardController implements Initializable {
 
                 copyButton.setOnAction(event -> {
                     MaskedCreditCardProxy proxy = getTableView().getItems().get(getIndex());
-                    ClipboardContent content = new ClipboardContent();
-                    content.putString("Number: " + proxy.getCreditCardNumber()
-                            + "\nName: " + proxy.getCardholderName()
-                            + "\nExpiration: " + proxy.getExpirationDate()
-                            + "\nCCV: " + proxy.getCcvCode());
-                    Clipboard.getSystemClipboard().setContent(content);
+                    ClipboardManager.copyToClipboard(
+                            "Issuer: " + proxy.getIssuer() +
+                                    "\nNumber: " + proxy.getCreditCardNumber() +
+                                    "\nName: " + proxy.getCardholderName() +
+                                    "\nExpiration: " + proxy.getExpirationDate() +
+                                    "\nCCV: " + proxy.getCcvCode()
+                    );
+                });
+
+                editButton.setOnAction(event -> {
+                    MaskedCreditCardProxy proxy = getTableView().getItems().get(getIndex());
+                    populateForm(proxy);
+                    creditCardTable.getSelectionModel().select(proxy);
+                });
+
+                deleteButton.setOnAction(event -> {
+                    MaskedCreditCardProxy proxy = getTableView().getItems().get(getIndex());
+                    deleteCard(proxy);
                 });
             }
 
@@ -196,17 +191,57 @@ public class CreditCardController implements Initializable {
                     setGraphic(null);
                     setText(null);
                 } else {
-                    setGraphic(new javafx.scene.layout.HBox(10, toggleButton, copyButton));
+                    setGraphic(new javafx.scene.layout.HBox(8, toggleButton, copyButton, editButton, deleteButton));
                 }
             }
         };
     }
 
-    @FXML
-    public void toggleCcv() {
+    private void populateForm(MaskedCreditCardProxy proxy) {
+        if (proxy == null) {
+            return;
+        }
+        issuerField.setText(proxy.getIssuer());
+        numberField.setText(proxy.getUnmaskedCreditCardNumber());
+        nameField.setText(proxy.getUnmaskedCardholderName());
+        expirationField.setText(proxy.getUnmaskedExpirationDate());
+        ccvField.setText(proxy.getUnmaskedCcvCode());
     }
 
-    @FXML
-    public void toggleCardNumber() {
+    private void loadCards() {
+        creditCards.clear();
+        for (CreditCard card : VaultDB.getCreditCards(getOwnerId())) {
+            creditCards.add(new MaskedCreditCardProxy(card));
+        }
+    }
+
+    private void deleteCard(MaskedCreditCardProxy proxy) {
+        VaultDB.deleteCreditCard(proxy.getCreditCard().getID());
+        creditCards.remove(proxy);
+        if (creditCardTable.getSelectionModel().getSelectedItem() == proxy) {
+            clearSelection();
+        }
+    }
+
+    private int getOwnerId() {
+        UserLogin loggedInUser = SessionManager.getInstance().getLoggedInUser();
+        return loggedInUser != null ? loggedInUser.getID() : 1;
+    }
+
+    private boolean validateInput() {
+        if (issuerField.getText().trim().isEmpty() || numberField.getText().trim().isEmpty() || nameField.getText().trim().isEmpty()
+                || expirationField.getText().trim().isEmpty() || ccvField.getText().trim().isEmpty()) {
+            showAlert("Missing information", "Issuer, Card Number, Cardholder Name, Expiration Date, and CCV are required.");
+            return false;
+        }
+        return true;
+    }
+
+    private void showAlert(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 }

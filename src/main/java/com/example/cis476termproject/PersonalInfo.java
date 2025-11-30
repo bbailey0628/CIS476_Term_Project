@@ -1,16 +1,35 @@
 package com.example.cis476termproject;
 
 public class PersonalInfo {
+    private int ID;
     private int OwnerID;
     private String LicenseNumber;
-    private int SocialSecurityNumber;
+    private String SocialSecurityNumber;
     private String PassportNumber;
 
-    public PersonalInfo(int ownerID, String licenseNumber, int socialSecurityNumber, String passportNumber) {
+    // First constructor
+    public PersonalInfo(int id, int ownerID, String licenseNumber, String socialSecurityNumber, String passportNumber) {
+        setID(id);
         setOwnerID(ownerID);
         setLicenseNumber(licenseNumber);
         setSocialSecurityNumber(socialSecurityNumber);
         setPassportNumber(passportNumber);
+    }
+
+    // Second constructor
+    public PersonalInfo(int ownerID, String licenseNumber, String socialSecurityNumber, String passportNumber) {
+        setOwnerID(ownerID);
+        setLicenseNumber(licenseNumber);
+        setSocialSecurityNumber(socialSecurityNumber);
+        setPassportNumber(passportNumber);
+    }
+
+    public int getID() {
+        return ID;
+    }
+
+    public void setID(int ID) {
+        this.ID = ID;
     }
 
     public int getOwnerID() {
@@ -29,11 +48,11 @@ public class PersonalInfo {
         LicenseNumber = licenseNumber;
     }
 
-    public int getSocialSecurityNumber() {
+    public String getSocialSecurityNumber() {
         return SocialSecurityNumber;
     }
 
-    public void setSocialSecurityNumber(int socialSecurityNumber) {
+    public void setSocialSecurityNumber(String socialSecurityNumber) {
         SocialSecurityNumber = socialSecurityNumber;
     }
 

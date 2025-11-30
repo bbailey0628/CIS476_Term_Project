@@ -30,7 +30,7 @@ public class MaskedPersonalInfoProxy {
     }
 
     public String getSocialSecurityNumber() {
-        return maskNumber(String.valueOf(personalInfo.getSocialSecurityNumber()));
+        return maskNumber(personalInfo.getSocialSecurityNumber());
     }
 
     public String getPassportNumber() {
@@ -42,7 +42,7 @@ public class MaskedPersonalInfoProxy {
     }
 
     public String getUnmaskedSocialSecurityNumber() {
-        return String.valueOf(personalInfo.getSocialSecurityNumber());
+        return personalInfo.getSocialSecurityNumber();
     }
 
     public String getUnmaskedPassportNumber() {
@@ -63,6 +63,9 @@ public class MaskedPersonalInfoProxy {
     }
 
     private String maskNumber(String value) {
+        if (value == null) {
+            return "";
+        }
         if (revealed) {
             return value;
         }

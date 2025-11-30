@@ -7,23 +7,14 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.util.Callback;
+
 import java.net.URL;
 import java.util.ResourceBundle;
 
 public class CredentialsController implements Initializable {
 
-    // Buttons and Labels
     @FXML
     private Button backButton;
-
-    @FXML
-    private Label urlValueLabel;
-
-    @FXML
-    private Label usernameValueLabel;
-
-    @FXML
-    private Label passwordValueLabel;
 
     @FXML
     private TableView<MaskedCredentialProxy> credentialsTable;
@@ -40,40 +31,30 @@ public class CredentialsController implements Initializable {
     @FXML
     private TableColumn<MaskedCredentialProxy, MaskedCredentialProxy> actionsColumn;
 
-    // Proxies for sensitive fields
-    private MaskedFieldProxy usernameProxy;
-    private MaskedFieldProxy passwordProxy;
-    private final SensitiveValueProxy urlProxy = new SensitiveValueProxy("https://example.com", false);
-    private final SensitiveValueProxy usernameSensitiveProxy = new SensitiveValueProxy("demo-user", false);
-    private final SensitiveValueProxy passwordSensitiveProxy = new SensitiveValueProxy("strong-password", true);
+    @FXML
+    private TextField urlField;
 
-    // Observable data for table
+    @FXML
+    private TextField usernameField;
+
+    @FXML
+    private PasswordField passwordField;
+
     private final ObservableList<MaskedCredentialProxy> credentialData = FXCollections.observableArrayList();
 
-    /**
-     * Main Initialize method for the controller.
-     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        // Initialize sensitive field proxies
-        urlValueLabel.setText(urlProxy.getDisplayValue());
-        usernameValueLabel.setText(usernameSensitiveProxy.getDisplayValue());
-        passwordValueLabel.setText(passwordSensitiveProxy.getDisplayValue());
-
-        // Populate the table with example data
-        credentialData.addAll(
-                new MaskedCredentialProxy(new Credentials(1, 1, "example.com", "alice@example.com", "P@ssword1!")),
-                new MaskedCredentialProxy(new Credentials(2, 1, "example.org", "bob@example.org", "Sup3rSecret"))
-        );
-
         credentialsTable.setItems(credentialData);
 
-        // Set up columns for the table
         urlColumn.setCellValueFactory(cell -> new javafx.beans.property.SimpleStringProperty(cell.getValue().getURL()));
         usernameColumn.setCellValueFactory(cell -> new javafx.beans.property.SimpleStringProperty(cell.getValue().getUsername()));
         passwordColumn.setCellValueFactory(cell -> new javafx.beans.property.SimpleStringProperty(cell.getValue().getPassword()));
         actionsColumn.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(param.getValue()));
         actionsColumn.setCellFactory(buildActionCellFactory());
+
+        credentialsTable.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> populateForm(newVal));
+
+        loadCredentials();
     }
 
     @FXML
@@ -86,47 +67,71 @@ public class CredentialsController implements Initializable {
     }
 
     @FXML
-    public void CopyUrlClicked() {
-        ClipboardManager.copyFromProxy(urlProxy);
-    }
-
-    @FXML
-    public void CopyUsernameClicked() {
-        ClipboardManager.copyFromProxy(usernameSensitiveProxy);
-    }
-
-    @FXML
-    public void CopyPasswordClicked() {
-        ClipboardManager.copyFromProxy(passwordSensitiveProxy);
-    }
-
-    public void loadCredentials(Credentials credentials) {
-        if (credentials == null) {
+    public void addCredential() {
+        if (!validateInput()) {
             return;
         }
-        urlProxy.updateValue(credentials.getURL());
-        usernameSensitiveProxy.updateValue(credentials.getUsername());
-        passwordSensitiveProxy.updateValue(credentials.getPassword());
-
-        urlValueLabel.setText(urlProxy.getDisplayValue());
-        usernameValueLabel.setText(usernameSensitiveProxy.getDisplayValue());
-        passwordValueLabel.setText(passwordSensitiveProxy.getDisplayValue());
+        Credentials credentials = new Credentials(0, getOwnerId(), urlField.getText().trim(), usernameField.getText().trim(), passwordField.getText().trim());
+        int id = VaultDB.addCredentials(credentials);
+        if (id > 0) {
+            credentials.setID(id);
+            credentialData.add(new MaskedCredentialProxy(credentials));
+            clearSelection();
+        } else {
+            showAlert("Save failed", "Unable to save credentials. Please try again.");
+        }
     }
 
-    private void updateToggle(ToggleButton toggle, MaskedFieldProxy proxy) {
-        if (toggle.isSelected()) {
-            proxy.reveal();
-            toggle.setText("Hide");
-        } else {
-            proxy.hide();
-            toggle.setText("Show");
+    @FXML
+    public void updateCredential() {
+        MaskedCredentialProxy proxy = credentialsTable.getSelectionModel().getSelectedItem();
+        if (proxy == null) {
+            showAlert("No selection", "Select an entry to update.");
+            return;
+        }
+        if (!validateInput()) {
+            return;
+        }
+        proxy.getCredentials().setURL(urlField.getText().trim());
+        proxy.getCredentials().setUsername(usernameField.getText().trim());
+        proxy.getCredentials().setPassword(passwordField.getText().trim());
+        VaultDB.updateCredentials(proxy.getCredentials());
+        credentialsTable.refresh();
+        clearSelection();
+    }
+
+    @FXML
+    public void deleteCredential() {
+        MaskedCredentialProxy proxy = credentialsTable.getSelectionModel().getSelectedItem();
+        if (proxy == null) {
+            showAlert("No selection", "Select an entry to delete.");
+            return;
+        }
+        deleteCredential(proxy);
+    }
+
+    @FXML
+    public void clearSelection() {
+        credentialsTable.getSelectionModel().clearSelection();
+        urlField.clear();
+        usernameField.clear();
+        passwordField.clear();
+    }
+
+    private void deleteCredential(MaskedCredentialProxy proxy) {
+        VaultDB.deleteCredentials(proxy.getCredentials().getID());
+        credentialData.remove(proxy);
+        if (credentialsTable.getSelectionModel().getSelectedItem() == proxy) {
+            clearSelection();
         }
     }
 
     private Callback<TableColumn<MaskedCredentialProxy, MaskedCredentialProxy>, TableCell<MaskedCredentialProxy, MaskedCredentialProxy>> buildActionCellFactory() {
         return column -> new TableCell<>() {
             private final Button toggleButton = new Button("Reveal");
-            private final Button copyButton = new Button("Copy");
+            private final Button copyButton = new Button("Copy All");
+            private final Button editButton = new Button("Edit");
+            private final Button deleteButton = new Button("Delete");
 
             {
                 toggleButton.setOnAction(event -> {
@@ -143,7 +148,22 @@ public class CredentialsController implements Initializable {
 
                 copyButton.setOnAction(event -> {
                     MaskedCredentialProxy proxy = getTableView().getItems().get(getIndex());
-                    ClipboardManager.copyToClipboard("Username: " + proxy.getUsername() + "\nPassword: " + proxy.getPassword());
+                    ClipboardManager.copyToClipboard(
+                            "URL: " + proxy.getURL() +
+                                    "\nUsername: " + proxy.getUsername() +
+                                    "\nPassword: " + proxy.getPassword()
+                    );
+                });
+
+                editButton.setOnAction(event -> {
+                    MaskedCredentialProxy proxy = getTableView().getItems().get(getIndex());
+                    populateForm(proxy);
+                    credentialsTable.getSelectionModel().select(proxy);
+                });
+
+                deleteButton.setOnAction(event -> {
+                    MaskedCredentialProxy proxy = getTableView().getItems().get(getIndex());
+                    deleteCredential(proxy);
                 });
             }
 
@@ -154,9 +174,46 @@ public class CredentialsController implements Initializable {
                     setGraphic(null);
                     setText(null);
                 } else {
-                    setGraphic(new javafx.scene.layout.HBox(10, toggleButton, copyButton));
+                    setGraphic(new javafx.scene.layout.HBox(8, toggleButton, copyButton, editButton, deleteButton));
                 }
             }
         };
+    }
+
+    private void populateForm(MaskedCredentialProxy proxy) {
+        if (proxy == null) {
+            return;
+        }
+        urlField.setText(proxy.getURL());
+        usernameField.setText(proxy.getUnmaskedUsername());
+        passwordField.setText(proxy.getUnmaskedPassword());
+    }
+
+    private void loadCredentials() {
+        credentialData.clear();
+        for (Credentials credentials : VaultDB.getCredentials(getOwnerId())) {
+            credentialData.add(new MaskedCredentialProxy(credentials));
+        }
+    }
+
+    private int getOwnerId() {
+        UserLogin loggedInUser = SessionManager.getInstance().getLoggedInUser();
+        return loggedInUser != null ? loggedInUser.getID() : 1;
+    }
+
+    private boolean validateInput() {
+        if (urlField.getText().trim().isEmpty() || usernameField.getText().trim().isEmpty() || passwordField.getText().trim().isEmpty()) {
+            showAlert("Missing information", "URL, Username, and Password are required.");
+            return false;
+        }
+        return true;
+    }
+
+    private void showAlert(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 }

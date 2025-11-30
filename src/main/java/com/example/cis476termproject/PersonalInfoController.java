@@ -6,8 +6,6 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
-import javafx.scene.input.Clipboard;
-import javafx.scene.input.ClipboardContent;
 import javafx.util.Callback;
 
 import java.net.URL;
@@ -30,40 +28,35 @@ public class PersonalInfoController implements Initializable {
     @FXML
     private TableColumn<MaskedPersonalInfoProxy, MaskedPersonalInfoProxy> actionsColumn;
 
-    // Proxies for masking sensitive information
-    private MaskedFieldProxy licenseProxy;
-    private MaskedFieldProxy ssnProxy;
-    private MaskedFieldProxy passportProxy;
-
-    // Observable list for the table data
-    private final ObservableList<MaskedPersonalInfoProxy> personalInfos = FXCollections.observableArrayList();
     @FXML
     private Button backButton;
 
-    /**
-     * Initializes the controller for the scene.
-     */
+    @FXML
+    private TextField licenseField;
+
+    @FXML
+    private TextField ssnField;
+
+    @FXML
+    private TextField passportField;
+
+    private final ObservableList<MaskedPersonalInfoProxy> personalInfos = FXCollections.observableArrayList();
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        // Initialize table with sample data
-        personalInfos.addAll(
-                new MaskedPersonalInfoProxy(new PersonalInfo(1, "D1234567", 111223333, "P12345678")),
-                new MaskedPersonalInfoProxy(new PersonalInfo(1, "D7654321", 999887777, "P87654321"))
-        );
-
         personalInfoTable.setItems(personalInfos);
 
-        // Configure table columns
         licenseColumn.setCellValueFactory(cell -> new javafx.beans.property.SimpleStringProperty(cell.getValue().getLicenseNumber()));
         ssnColumn.setCellValueFactory(cell -> new javafx.beans.property.SimpleStringProperty(cell.getValue().getSocialSecurityNumber()));
         passportColumn.setCellValueFactory(cell -> new javafx.beans.property.SimpleStringProperty(cell.getValue().getPassportNumber()));
         actionsColumn.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(param.getValue()));
         actionsColumn.setCellFactory(buildActionCellFactory());
+
+        personalInfoTable.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> populateForm(newVal));
+
+        loadPersonalInfos();
     }
 
-    /**
-     * Handles the 'Back' button click event.
-     */
     @FXML
     public void BackButtonClicked() {
         try {
@@ -73,28 +66,64 @@ public class PersonalInfoController implements Initializable {
         }
     }
 
-    /**
-     * Updates the toggle button state and associated proxy.
-     */
-    private void updateToggle(ToggleButton toggle, MaskedFieldProxy proxy) {
-        if (toggle.isSelected()) {
-            proxy.reveal();
-            toggle.setText("Hide");
+    @FXML
+    public void addPersonalInfo() {
+        if (!validateInput()) {
+            return;
+        }
+        PersonalInfo info = new PersonalInfo(0, getOwnerId(), licenseField.getText().trim(), ssnField.getText().trim(), passportField.getText().trim());
+        int id = VaultDB.addPersonalInfo(info);
+        if (id > 0) {
+            info.setID(id);
+            personalInfos.add(new MaskedPersonalInfoProxy(info));
+            clearSelection();
         } else {
-            proxy.hide();
-            toggle.setText("Show");
+            showAlert("Save failed", "Unable to save personal info.");
         }
     }
 
-    /**
-     * Builds the actions column cell factory for the table view.
-     *
-     * @return A callback for the actions column.
-     */
+    @FXML
+    public void updatePersonalInfo() {
+        MaskedPersonalInfoProxy proxy = personalInfoTable.getSelectionModel().getSelectedItem();
+        if (proxy == null) {
+            showAlert("No selection", "Select an entry to update.");
+            return;
+        }
+        if (!validateInput()) {
+            return;
+        }
+        proxy.getPersonalInfo().setLicenseNumber(licenseField.getText().trim());
+        proxy.getPersonalInfo().setSocialSecurityNumber(ssnField.getText().trim());
+        proxy.getPersonalInfo().setPassportNumber(passportField.getText().trim());
+        VaultDB.updatePersonalInfo(proxy.getPersonalInfo());
+        personalInfoTable.refresh();
+        clearSelection();
+    }
+
+    @FXML
+    public void deletePersonalInfo() {
+        MaskedPersonalInfoProxy proxy = personalInfoTable.getSelectionModel().getSelectedItem();
+        if (proxy == null) {
+            showAlert("No selection", "Select an entry to delete.");
+            return;
+        }
+        deletePersonalInfo(proxy);
+    }
+
+    @FXML
+    public void clearSelection() {
+        personalInfoTable.getSelectionModel().clearSelection();
+        licenseField.clear();
+        ssnField.clear();
+        passportField.clear();
+    }
+
     private Callback<TableColumn<MaskedPersonalInfoProxy, MaskedPersonalInfoProxy>, TableCell<MaskedPersonalInfoProxy, MaskedPersonalInfoProxy>> buildActionCellFactory() {
         return column -> new TableCell<>() {
             private final Button toggleButton = new Button("Reveal");
-            private final Button copyButton = new Button("Copy");
+            private final Button copyButton = new Button("Copy All");
+            private final Button editButton = new Button("Edit");
+            private final Button deleteButton = new Button("Delete");
 
             {
                 toggleButton.setOnAction(event -> {
@@ -111,13 +140,22 @@ public class PersonalInfoController implements Initializable {
 
                 copyButton.setOnAction(event -> {
                     MaskedPersonalInfoProxy proxy = getTableView().getItems().get(getIndex());
-                    ClipboardContent content = new ClipboardContent();
-                    content.putString(
+                    ClipboardManager.copyToClipboard(
                             "License: " + proxy.getLicenseNumber() +
                                     "\nSSN: " + proxy.getSocialSecurityNumber() +
                                     "\nPassport: " + proxy.getPassportNumber()
                     );
-                    Clipboard.getSystemClipboard().setContent(content);
+                });
+
+                editButton.setOnAction(event -> {
+                    MaskedPersonalInfoProxy proxy = getTableView().getItems().get(getIndex());
+                    populateForm(proxy);
+                    personalInfoTable.getSelectionModel().select(proxy);
+                });
+
+                deleteButton.setOnAction(event -> {
+                    MaskedPersonalInfoProxy proxy = getTableView().getItems().get(getIndex());
+                    deletePersonalInfo(proxy);
                 });
             }
 
@@ -128,21 +166,54 @@ public class PersonalInfoController implements Initializable {
                     setGraphic(null);
                     setText(null);
                 } else {
-                    setGraphic(new javafx.scene.layout.HBox(10, toggleButton, copyButton));
+                    setGraphic(new javafx.scene.layout.HBox(8, toggleButton, copyButton, editButton, deleteButton));
                 }
             }
         };
     }
 
-    @FXML
-    public void toggleSsn() {
+    private void populateForm(MaskedPersonalInfoProxy proxy) {
+        if (proxy == null) {
+            return;
+        }
+        licenseField.setText(proxy.getUnmaskedLicenseNumber());
+        ssnField.setText(proxy.getUnmaskedSocialSecurityNumber());
+        passportField.setText(proxy.getUnmaskedPassportNumber());
     }
 
-    @FXML
-    public void toggleLicense() {
+    private void loadPersonalInfos() {
+        personalInfos.clear();
+        for (PersonalInfo info : VaultDB.getPersonalInfos(getOwnerId())) {
+            personalInfos.add(new MaskedPersonalInfoProxy(info));
+        }
     }
 
-    @FXML
-    public void togglePassport() {
+    private void deletePersonalInfo(MaskedPersonalInfoProxy proxy) {
+        VaultDB.deletePersonalInfo(proxy.getPersonalInfo().getID());
+        personalInfos.remove(proxy);
+        if (personalInfoTable.getSelectionModel().getSelectedItem() == proxy) {
+            clearSelection();
+        }
+    }
+
+    private int getOwnerId() {
+        UserLogin loggedInUser = SessionManager.getInstance().getLoggedInUser();
+        return loggedInUser != null ? loggedInUser.getID() : 1;
+    }
+
+    private boolean validateInput() {
+        if (licenseField.getText().trim().isEmpty() && ssnField.getText().trim().isEmpty() && passportField.getText().trim().isEmpty()) {
+            showAlert("Missing information", "At least one of License, SSN, or Passport must be provided.");
+            return false;
+        }
+        return true;
+    }
+
+    private void showAlert(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 }
