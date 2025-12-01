@@ -21,7 +21,7 @@ public class MyPassApplication extends Application {
     public void start(Stage stage) throws IOException {
         primaryStage = stage;
         FXMLLoader fxmlLoader = new FXMLLoader(MyPassApplication.class.getResource("login-view.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 650, 425);
+        Scene scene = new Scene(fxmlLoader.load(), 700, 500);
 
         stage.setTitle("CIS476 Term_Project");
         stage.setScene(scene);

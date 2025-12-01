@@ -3,35 +3,35 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox alignment="CENTER" spacing="20.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.cis476termproject.HomeController">
+<VBox alignment="CENTER" prefHeight="500.0" prefWidth="700.0" spacing="20.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.cis476termproject.HomeController">
     <padding>
         <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
     </padding>
    <children>
-      <HBox alignment="TOP_CENTER" prefHeight="10.0" prefWidth="600.0" />
+      <Label alignment="CENTER" text="Home" textAlignment="CENTER" textOverrun="CLIP">
+         <font>
+            <Font name="Arial Bold" size="40.0" />
+         </font>
+      </Label>
+      <Separator />
       <HBox alignment="CENTER" prefHeight="300.0" prefWidth="600.0">
          <children>
-            <AnchorPane>
+            <AnchorPane prefHeight="300.0" prefWidth="650.0">
                <children>
-                  <Label fx:id="WelcomeText" alignment="CENTER" layoutX="14.0" text="Welcome, User!" textAlignment="CENTER" textOverrun="CLIP" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="100.0" AnchorPane.topAnchor="0.0">
-                     <font>
-                        <Font name="Arial Bold" size="40.0" />
-                     </font>
-                  </Label>
-                  <Button fx:id="logoutButton" layoutX="201.0" layoutY="274.0" mnemonicParsing="false" onAction="#LogoutButtonClicked" prefHeight="25.0" prefWidth="100.0" text="Logout" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="201.0" />
-                  <Button fx:id="CredentialsButton" layoutX="100.0" layoutY="98.0" mnemonicParsing="false" onAction="#CredentialsButtonClicked" prefHeight="25.0" prefWidth="100.0" text="Credentials" />
-                  <Button fx:id="CreditCardButton" layoutX="301.0" layoutY="98.0" mnemonicParsing="false" onAction="#CreditCardButtonClicked" prefHeight="25.0" prefWidth="100.0" text="Credit Cards" />
-                  <Button fx:id="PersonalInfoButton" layoutX="100.0" layoutY="177.0" mnemonicParsing="false" onAction="#PersonalInfoButtonClicked" prefHeight="25.0" prefWidth="100.0" text="Personal Info" />
-                  <Button fx:id="SecureNoteButton" layoutX="301.0" layoutY="177.0" mnemonicParsing="false" onAction="#SecureNoteButtonClicked" prefHeight="25.0" prefWidth="100.0" text="Secure Notes" />
+                  <Button fx:id="logoutButton" layoutX="275.0" layoutY="261.0" mnemonicParsing="false" onAction="#LogoutButtonClicked" prefHeight="25.0" prefWidth="100.0" text="Logout" AnchorPane.bottomAnchor="14.0" />
+                  <Button fx:id="CredentialsButton" layoutX="25.0" layoutY="85.0" mnemonicParsing="false" onAction="#CredentialsButtonClicked" prefHeight="25.0" prefWidth="100.0" text="Credentials" AnchorPane.leftAnchor="100.0" />
+                  <Button fx:id="CreditCardButton" layoutX="226.0" layoutY="85.0" mnemonicParsing="false" onAction="#CreditCardButtonClicked" prefHeight="25.0" prefWidth="100.0" text="Credit Cards" AnchorPane.rightAnchor="100.0" />
+                  <Button fx:id="PersonalInfoButton" layoutX="25.0" layoutY="164.0" mnemonicParsing="false" onAction="#PersonalInfoButtonClicked" prefHeight="25.0" prefWidth="100.0" text="Personal Info" AnchorPane.leftAnchor="100.0" />
+                  <Button fx:id="SecureNoteButton" layoutX="226.0" layoutY="164.0" mnemonicParsing="false" onAction="#SecureNoteButtonClicked" prefHeight="25.0" prefWidth="100.0" text="Secure Notes" AnchorPane.rightAnchor="100.0" />
                </children>
             </AnchorPane>
          </children>
       </HBox>
-      <HBox alignment="BOTTOM_CENTER" prefHeight="10.0" prefWidth="600.0" />
    </children>
 </VBox>

@@ -36,6 +36,8 @@ public class RecoveryController implements PasswordObserver {
     private boolean questionsCompleted = false;
 
     private final PasswordStrengthSubject strengthSubject = new PasswordStrengthSubject();
+    @FXML
+    private Button backButton;
 
     @FXML
     public void initialize() {
@@ -186,5 +188,14 @@ public class RecoveryController implements PasswordObserver {
     @Override
     public void onPasswordChanged(String password, PasswordStrength strength) {
         feedbackLabel.setText("Password changed to a " + strength.name() + " strength.");
+    }
+
+    @FXML
+    public void BackButtonClicked() {
+        try {
+            MyPassApplication.switchScene("login-view.fxml");
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }

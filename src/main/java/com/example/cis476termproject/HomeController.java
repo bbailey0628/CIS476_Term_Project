@@ -15,8 +15,6 @@ public class HomeController {
     private Button CredentialsButton;
     @FXML
     private Button PersonalInfoButton;
-    @FXML
-    private Label WelcomeText;
 
     @FXML
     public void CreditCardButtonClicked() {

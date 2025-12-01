@@ -1,37 +1,45 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox alignment="TOP_CENTER" spacing="12.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.cis476termproject.RecoveryController">
+<VBox alignment="TOP_CENTER" prefHeight="500.0" prefWidth="700.0" spacing="12.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.cis476termproject.RecoveryController">
     <padding>
         <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
     </padding>
     <children>
         <Label text="Account Recovery">
             <font>
-                <Font name="Arial Bold" size="32.0" />
+                <Font name="Arial Bold" size="30.0" />
             </font>
         </Label>
         <Separator />
         <HBox alignment="CENTER_LEFT" spacing="10.0">
             <Label text="Email:" />
-            <TextField fx:id="emailField" promptText="you@example.com" prefWidth="250" />
+            <TextField fx:id="emailField" prefWidth="250" promptText="you@example.com" />
             <Button fx:id="loadUserButton" mnemonicParsing="false" onAction="#loadUser" text="Find Account" />
         </HBox>
-        <VBox spacing="8.0" prefWidth="600">
+        <VBox prefWidth="600" spacing="8.0">
             <Label text="Security question:" />
             <Label fx:id="questionLabel" text="Security Question" wrapText="true" />
             <HBox spacing="8.0">
-                <TextField fx:id="answerField" promptText="Your answer" prefWidth="300" />
+                <TextField fx:id="answerField" prefWidth="300" promptText="Your answer" />
                 <Button fx:id="submitAnswerButton" mnemonicParsing="false" onAction="#submitAnswer" text="Submit Answer" />
             </HBox>
         </VBox>
         <Label fx:id="feedbackLabel" textFill="BLACK" wrapText="true" />
         <Separator />
-        <VBox spacing="10.0" prefWidth="600">
+        <VBox prefWidth="600" spacing="10.0">
             <Label text="Reset password" />
             <GridPane hgap="10" vgap="10">
                 <columnConstraints>
@@ -44,17 +52,26 @@
                     <RowConstraints />
                 </rowConstraints>
                 <children>
-                    <Label text="New password:" GridPane.rowIndex="0" GridPane.columnIndex="0" />
-                    <PasswordField fx:id="newPasswordField" GridPane.rowIndex="0" GridPane.columnIndex="1" onKeyReleased="#handlePasswordInputChanged" />
-                    <Label text="Confirm password:" GridPane.rowIndex="1" GridPane.columnIndex="0" />
-                    <PasswordField fx:id="confirmPasswordField" GridPane.rowIndex="1" GridPane.columnIndex="1" onKeyReleased="#handlePasswordInputChanged" />
-                    <Label fx:id="strengthLabel" text="Strength: n/a" GridPane.rowIndex="2" GridPane.columnIndex="0" />
-                    <Label fx:id="passwordStatusLabel" textFill="red" GridPane.rowIndex="2" GridPane.columnIndex="1" />
+                    <Label text="New password:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                    <PasswordField fx:id="newPasswordField" onKeyReleased="#handlePasswordInputChanged" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                    <Label text="Confirm password:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                    <PasswordField fx:id="confirmPasswordField" onKeyReleased="#handlePasswordInputChanged" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                    <Label fx:id="strengthLabel" text="Strength: n/a" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                    <Label fx:id="passwordStatusLabel" textFill="red" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                 </children>
             </GridPane>
-            <HBox alignment="CENTER_RIGHT">
-                <Button fx:id="resetPasswordButton" mnemonicParsing="false" onAction="#resetPassword" text="Reset Password" />
-            </HBox>
         </VBox>
+         <HBox alignment="CENTER">
+             <Button fx:id="resetPasswordButton" mnemonicParsing="false" onAction="#resetPassword" prefHeight="25.0" prefWidth="100.0" text="Reset Password" textAlignment="CENTER">
+            <HBox.margin>
+               <Insets right="50.0" />
+            </HBox.margin>
+         </Button>
+         <Button fx:id="backButton" onAction="#BackButtonClicked" prefHeight="25.0" prefWidth="100.0" text="Back" textAlignment="CENTER">
+            <HBox.margin>
+               <Insets left="20.0" />
+            </HBox.margin>
+         </Button>
+         </HBox>
     </children>
 </VBox>

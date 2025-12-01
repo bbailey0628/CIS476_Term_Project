@@ -1,54 +1,65 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox alignment="TOP_CENTER" spacing="12.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="com.example.cis476termproject.SecureNoteController">
+<VBox alignment="TOP_CENTER" prefHeight="500.0" prefWidth="700.0" spacing="12.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.cis476termproject.SecureNoteController">
     <padding>
-        <Insets top="16" right="16" bottom="16" left="16"/>
+        <Insets bottom="16" left="16" right="16" top="16" />
     </padding>
     <children>
         <Label text="Secure Notes" textAlignment="CENTER">
             <font>
-                <Font name="Arial Bold" size="28.0"/>
+                <Font name="Arial Bold" size="30.0" />
             </font>
         </Label>
+      <Separator />
 
         <TableView fx:id="noteTable" prefHeight="220.0" prefWidth="640.0">
             <columns>
-                <TableColumn fx:id="titleColumn" prefWidth="180.0" text="Title"/>
-                <TableColumn fx:id="noteColumn" prefWidth="300.0" text="Note"/>
-                <TableColumn fx:id="actionsColumn" prefWidth="140.0" text="Actions"/>
+                <TableColumn fx:id="titleColumn" prefWidth="180.0" text="Title" />
+                <TableColumn fx:id="noteColumn" prefWidth="300.0" text="Note" />
+                <TableColumn fx:id="actionsColumn" prefWidth="140.0" text="Actions" />
             </columns>
         </TableView>
 
         <GridPane hgap="10.0" vgap="10.0">
             <columnConstraints>
-                <ColumnConstraints halignment="RIGHT" minWidth="120.0"/>
-                <ColumnConstraints hgrow="ALWAYS" minWidth="200.0"/>
+                <ColumnConstraints halignment="RIGHT" minWidth="120.0" />
+                <ColumnConstraints hgrow="ALWAYS" minWidth="200.0" />
             </columnConstraints>
             <rowConstraints>
-                <RowConstraints minHeight="30.0"/>
-                <RowConstraints minHeight="80.0" vgrow="ALWAYS"/>
+                <RowConstraints minHeight="30.0" />
+                <RowConstraints minHeight="80.0" vgrow="ALWAYS" />
             </rowConstraints>
             <children>
-                <Label text="Title:" GridPane.rowIndex="0"/>
-                <TextField fx:id="titleField" promptText="Trip notes" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+                <Label text="Title:" GridPane.rowIndex="0" />
+                <TextField fx:id="titleField" promptText="Trip notes" GridPane.columnIndex="1" GridPane.rowIndex="0" />
 
-                <Label text="Note:" GridPane.rowIndex="1"/>
-                <TextArea fx:id="noteField" promptText="Add your note" prefRowCount="3" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                <Label text="Note:" GridPane.rowIndex="1" />
+                <TextArea fx:id="noteField" prefRowCount="3" promptText="Add your note" GridPane.columnIndex="1" GridPane.rowIndex="1" />
             </children>
         </GridPane>
 
-        <HBox spacing="10.0" alignment="CENTER">
+        <HBox alignment="CENTER" spacing="10.0">
             <children>
-                <Button text="Add" onAction="#addNote"/>
-                <Button text="Update" onAction="#updateNote"/>
-                <Button text="Delete" onAction="#deleteNote"/>
-                <Button text="Clear Selection" onAction="#clearSelection"/>
-                <Button text="Back" fx:id="backButton" onAction="#BackButtonClicked"/>
+                <Button onAction="#addNote" text="Add" />
+                <Button onAction="#updateNote" text="Update" />
+                <Button onAction="#deleteNote" text="Delete" />
+                <Button onAction="#clearSelection" text="Clear Selection" />
+                <Button fx:id="backButton" onAction="#BackButtonClicked" text="Back" />
             </children>
         </HBox>
     </children>

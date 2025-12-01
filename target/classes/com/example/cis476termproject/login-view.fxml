@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox alignment="CENTER" spacing="20.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.cis476termproject.LoginController">
+<VBox alignment="CENTER" prefHeight="500.0" prefWidth="700.0" spacing="20.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.cis476termproject.LoginController">
     <padding>
         <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
     </padding>
@@ -18,9 +18,9 @@
       <HBox alignment="TOP_CENTER" prefHeight="10.0" prefWidth="600.0" />
       <HBox alignment="CENTER" prefHeight="300.0" prefWidth="600.0">
          <children>
-            <AnchorPane>
+            <AnchorPane prefHeight="300.0" prefWidth="650.0">
                <children>
-                  <Label layoutX="14.0" text="Welcome to MyPass" textOverrun="CLIP" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="100.0" AnchorPane.topAnchor="0.0">
+                  <Label layoutX="133.0" text="Welcome to MyPass" textOverrun="CLIP" AnchorPane.topAnchor="0.0">
                      <font>
                         <Font name="Arial Bold" size="40.0" />
                      </font>
